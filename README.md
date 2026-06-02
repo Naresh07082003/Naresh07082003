@@ -144,11 +144,104 @@ const naresh = {
 
 ## 🚀 Featured Projects
 
+---
+
+### ⚡ [TaskFlow — Full-Stack Task Management Dashboard](https://github.com/nareshmurugan1907/taskflow)
+
+> A production-structured web application built from scratch: REST API backend + responsive single-page frontend with real role-based access control.
+
+<div align="center">
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=express&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![REST API](https://img.shields.io/badge/REST+API-005C97?style=flat-square)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL_ready-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+
+</div>
+
+**Architecture**
+
+```
+taskflow/
+├── backend/
+│   ├── server.js              # Express entry point — CORS, JSON, error handling
+│   ├── middleware/
+│   │   ├── auth.js            # JWT verify + requireRole(...roles) factory
+│   │   └── logger.js          # Structured JSON request/response logging
+│   ├── routes/
+│   │   ├── auth.js            # POST /api/auth/login|logout  GET /api/auth/me
+│   │   ├── projects.js        # Full CRUD /api/projects
+│   │   ├── tasks.js           # Full CRUD /api/projects/:id/tasks
+│   │   └── users.js           # GET /api/users  (Admin only)
+│   └── data/
+│       └── *.json             # Flat-file store — swap layer for PostgreSQL/MongoDB
+└── frontend/
+    ├── index.html             # SPA shell
+    ├── style.css              # Design system + component styles
+    └── app.js                 # ES Module SPA router + API client
+```
+
+**Key Design Decisions**
+
+| Decision | What & Why |
+|----------|-----------|
+| 🔐 `requireRole(...roles)` factory | Clean role enforcement per route — Admin / Manager / Developer; keeps route files readable |
+| 🗄️ Swappable data layer | All DB reads/writes isolated in `routes/` — only that layer changes to migrate to PostgreSQL |
+| 📋 Structured logging | Every request logs method · path · status · duration · user — drop-in ready for any log aggregator |
+| 🔑 JWT (8h expiry) | Stateless, scalable auth; password never returned; intentionally vague 401s to prevent email enumeration |
+| 🌐 ES Modules frontend | No bundler needed; native browser imports; zero build tooling friction |
+
+**REST API Surface**
+
+```
+POST   /api/auth/login              → JWT + safe user object
+POST   /api/auth/logout             → token discard (stateless)
+GET    /api/auth/me                 → current user from token
+
+GET    /api/projects                → all projects        [All roles]
+POST   /api/projects                → create project      [Admin]
+GET    /api/projects/:id            → project detail      [All roles]
+PUT    /api/projects/:id            → update project      [Manager+]
+DELETE /api/projects/:id            → delete project      [Admin]
+
+GET    /api/projects/:id/tasks      → list tasks          [All roles]
+POST   /api/projects/:id/tasks      → create task         [Manager+]
+PUT    /api/tasks/:id               → update task         [Assignee]
+DELETE /api/tasks/:id               → delete task         [Manager+]
+
+GET    /api/users                   → list users          [Admin]
+GET    /api/users/me                → own profile         [All roles]
+```
+
+**Demo Credentials**
+
+| Role | Email | Password |
+|------|-------|----------|
+| 🔴 Admin | admin@taskflow.dev | admin123 |
+| 🟡 Manager | manager@taskflow.dev | manager123 |
+| 🟢 Developer | dev@taskflow.dev | dev123 |
+
+**Features at a glance**
+
+- ✅ JWT authentication with 8h token expiry
+- ✅ Role-based access: Admin · Manager · Developer with factory middleware
+- ✅ Full project + task CRUD with query filters (status, priority, assignee)
+- ✅ Audit logging — every action timestamped and structured
+- ✅ Responsive single-page Kanban UI — filters, modals, toast notifications
+- ✅ Data layer isolated for PostgreSQL / MongoDB migration
+- ✅ `/health` endpoint for deployment readiness checks
+- ✅ Centralised error handler + 404 fallback
+
+---
+
 <div align="center">
 
 | Project | Stack | Highlights |
 |--------|-------|------------|
-| [**TaskFlow**](https://github.com/nareshmurugan1907) — Full-Stack Task Management Dashboard | Node.js · Express.js · JWT · JavaScript · REST API | Role-based flows (Admin/Manager/Developer), JWT auth middleware, factory-pattern RBAC, structured logging, isolated data layer ready for PostgreSQL migration, single-page Kanban UI with filters, modals & toast notifications |
 | **Intelligent Blind Spot Detection System** | Python · OpenCV · Raspberry Pi · L293D | Multi-sensor embedded system with sensor data fusion; real-time stream validation with on-device processing; continuous hardware debugging across wiring, firmware & sensor layers |
 | **Robolab – Hardware-Oriented System Experiments** | Hardware Assembly · Test Procedures · Documentation | Structured build & test protocol at TU Dresden (Oct 2024 – Jan 2025); detailed results documentation with strong attention to hardware verification |
 
